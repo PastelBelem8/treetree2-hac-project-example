@@ -9,10 +9,10 @@ class Network:
 		self.port = 5556
 
 		self.addr = (self.server, self.port)
-		self.player = self.connect()
+		self.game = self.connect()
 		
-	def getP(self):
-		return self.player
+	def getGame(self):
+		return self.game
 
 	def connect(self):
 		try:

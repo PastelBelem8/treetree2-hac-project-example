@@ -2,7 +2,7 @@ import socket
 import _thread
 import sys
 import pickle
-from player import Player, Game, screen_dimensions
+from player import Player, Game, screen_dimensions, offset_y
 
 server = "194.210.228.4" # ip address (discover with ipconfig)
 port = 5556
@@ -19,35 +19,33 @@ print("Waiting for a connection, Server Started")
 
 
 screen_x, screen_y = screen_dimensions
+player_dims = (20, 30)
+h = player_dims[1]
 
 players = [
-	Player(screen_x / 4, 0, 30, 30, (255, 0, 0)), 
-	Player(screen_x / 4, screen_y - 30, 30, 30, (0, 125, 125))
+	Player(screen_x / 4, screen_y - h - offset_y, *player_dims, (255, 0, 0)), 
+	Player(screen_x / 5, screen_y - h - offset_y, *player_dims, (0, 125, 125))
 ]
 
 
 # To continuously run while our client is connected
 def threaded_client(conn, player_id):
-	conn.send(pickle.dumps(players[player_id]))
+	game = Game(players, player_id)
+	conn.send(pickle.dumps(game))
 	reply = ""
 	while True:
 		try:
-			data = pickle.loads(conn.recv(2048))
-			print("Received: ", data)
-			players[player_id] = data
+			game = pickle.loads(conn.recv(2048))
+			print("Received: ", game)
+			players[player_id] = game.get_player()
 
-			if not data:
+			if not game:
 				print("Disconnected")
 				break
 			else:
-				print("Determining which player to retrieve")
-				if player_id == 1:
-					reply = players[0]
-				else: 
-					reply = players[1]
-
+				print("Updating the Game object to send")
+				reply = Game(players, player_id)
 				print("Sending : ", reply)
-			
 			conn.sendall(pickle.dumps(reply))
 		except:
 			print("Unexpected Error at the Server!")

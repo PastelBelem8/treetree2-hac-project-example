@@ -1,7 +1,7 @@
 import pygame
 
-
 screen_dimensions = (400, 300)
+offset_y = 15
 
 class Player():
 	def __init__(self, x, y, width, height, color):
@@ -11,9 +11,10 @@ class Player():
 		self.height = height
 		self.color = color
 		self.rect = (x, y, width, height)
+		self.hitbox = self.rect
 		
 		self.velocity = 3
-		self.going_up = True
+		self.y_direction = 0
 
 	def draw(self, win): 
 		pygame.draw.rect(win, self.color, self.rect)
@@ -22,21 +23,26 @@ class Player():
 		keys = pygame.key.get_pressed()
 		
 		if keys[pygame.K_UP]:
-		 	self.going_up = True  
+		 	self.y_direction = -1  
 		
 		if keys[pygame.K_DOWN]:
-		 	self.going_up = False
+		 	self.y_direction = 1
 
 		self.update()
 
 	def update(self):
-		# Update y's
-		if self.going_up: 
-			self.y = max(0, self.y - self.velocity)
-		else:
-			self.y = min(screen_dimensions[1] - self.height, self.y + self.velocity)
+		self.y = self.y + self.y_direction * self.velocity
+
+		if self.y_direction == -1 and self.y <= offset_y: 
+			self.y = offset_y
+			self.y_direction = 0
+
+		elif self.y_direction == 1 and self.y > screen_dimensions[1] - self.height - offset_y:
+			self.y = screen_dimensions[1] - self.height - offset_y
+			self.y_direction = 0
 
 		self.rect = (self.x, self.y, self.width, self.height)
+		self.hitbox = self.rect
 
 
 class Game:
@@ -47,5 +53,12 @@ class Game:
 	def get_player(self):
 		return self.players[self.player_id]
 
-	def get_enemy_player(self):
+	def get_other_player(self):
 		return self.players[(self.player_id + 1) % len(self.players)]
+
+	def update(self):
+		self.players[self.player_id].move()
+
+	def draw(self, win):
+		for p in self.players:
+			p.draw(win)
