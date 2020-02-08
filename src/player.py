@@ -1,7 +1,7 @@
 import pygame
 
 
-screen_dimensions = (400, 400)
+screen_dimensions = (400, 300)
 
 class Player():
 	def __init__(self, x, y, width, height, color):
