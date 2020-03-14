@@ -3,6 +3,7 @@ import pygame.time
 
 from network import Network
 from player import screen_dimensions, Player
+import random
 
 
 pygame.init()
@@ -10,7 +11,7 @@ pygame.init()
 # Screen Configurations
 # ------------------------------------------------------------
 win = pygame.display.set_mode(screen_dimensions)
-pygame.display.set_caption("Hac-2020 Games")
+pygame.display.set_caption("HAC-2020 Games")
 
 # ------------------------------------------------------------
 ## Background Configurations
@@ -66,7 +67,14 @@ def main():
 	game = network.getGame()
 
 	clock = pygame.time.Clock()
-	pygame.time.set_timer(pygame.USEREVENT+1, 500) # Sets the timer for 0.5 seconds
+
+	# Sets the timer for 0.5 seconds
+	pygame.time.set_timer(pygame.USEREVENT + 1, 500) 
+
+	# Will trigger every 1 - 3 seconds
+	pygame.time.set_timer(pygame.USEREVENT + 2, 
+					      random.randrange(1000, 3000))
+
 	while run:
 		clock.tick(game_speed)
 		update_background()
@@ -78,6 +86,8 @@ def main():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				run = False # Stop program
+			if event.type == pygame.USEREVENT + 2:
+				game.generate_obstacle()
 
 		game.update()
 		redrawWindow(win, game)

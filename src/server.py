@@ -4,7 +4,7 @@ import sys
 import pickle
 from player import Player, Game, screen_dimensions, offset_y
 
-server = "194.210.228.4" # ip address (discover with ipconfig)
+server = "192.168.1.17" # ip address (discover with ipconfig)
 port = 5556
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,7 +27,6 @@ players = [
 	Player(screen_x / 5, screen_y - h - offset_y, *player_dims, (0, 125, 125))
 ]
 
-
 # To continuously run while our client is connected
 def threaded_client(conn, player_id):
 	game = Game(players, player_id)
@@ -38,13 +37,14 @@ def threaded_client(conn, player_id):
 			game = pickle.loads(conn.recv(2048))
 			print("Received: ", game)
 			players[player_id] = game.get_player()
+			obstacles = game.get_obstacles()
 
 			if not game:
 				print("Disconnected")
 				break
 			else:
 				print("Updating the Game object to send")
-				reply = Game(players, player_id)
+				reply = Game(players, player_id, obstacles)
 				print("Sending : ", reply)
 			conn.sendall(pickle.dumps(reply))
 		except:
