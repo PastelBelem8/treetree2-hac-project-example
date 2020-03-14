@@ -65,7 +65,7 @@ class Obstacle:
 		self.max_count = len(Obstacle.images)
 
 	def update(self):
-		self.count = (self.count + 1) % self.max_count * 2
+		self.count = (self.count + 1) % self.max_count 
 
 	def draw(self, win):
 		# Defines the accurate hitbox for our character 

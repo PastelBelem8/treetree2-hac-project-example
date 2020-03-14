@@ -18,12 +18,12 @@ class Network:
 		try:
 			self.client.connect(self.addr)
 			# Load Byte Data
-			return pickle.loads(self.client.recv(2048))
+			return pickle.loads(self.client.recv(2048*2))
 		except:
 			print("Could not connect")
 			pass
 
 	def send(self, data):
 		self.client.send(pickle.dumps(data))
-		data = self.client.recv(2048)
+		data = self.client.recv(2048*2)
 		return pickle.loads(data)
