@@ -13,6 +13,10 @@ pygame.init()
 win = pygame.display.set_mode(screen_dimensions)
 pygame.display.set_caption("HAC-2020 Games")
 
+# The first argument is the font, next is size and then True 
+# to make our font bold
+font = pygame.font.SysFont("fixedsys500c", 20, False)
+
 # ------------------------------------------------------------
 ## Background Configurations
 # -------------------------------------------------------------
@@ -51,7 +55,7 @@ def redrawWindow(win, game):
 	
 	# Update game 
 	game.draw(win)
-
+	game.draw_score(win, font)	
 	# Update screen
 	pygame.display.update()
 
@@ -70,7 +74,7 @@ def main():
 
 	# Will trigger every 1 - 3 seconds
 	pygame.time.set_timer(pygame.USEREVENT + 1, 
-			      random.randrange(100, 1500))
+			      random.randrange(250, 1500))
 
 	while run:
 		clock.tick(game_speed)
@@ -84,7 +88,7 @@ def main():
 			if event.type == pygame.QUIT:
 				run = False # Stop program
 			if event.type == pygame.USEREVENT + 1:
-				game.generate_obstacle(random.uniform(1, 10))
+				game.generate_obstacle(random.uniform(1, 7))
 
 		game.update()
 		redrawWindow(win, game)

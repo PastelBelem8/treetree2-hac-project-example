@@ -14,6 +14,7 @@ class Player:
 		self.height = height
 		self.color = color
 		self.rect = (x, y, width, height)
+		
         # The elements in the hitbox are (top left x, top left y, width, height)
 		self.hitbox = pygame.Rect(self.rect)
 		
@@ -27,6 +28,8 @@ class Player:
 		pygame.draw.rect(win, self.color, self.rect)
 
 	def move(self):
+		if self.has_lost: return;
+
 		keys = pygame.key.get_pressed()
 		
 		if keys[pygame.K_UP]:
@@ -38,8 +41,6 @@ class Player:
 		self.update()
 
 	def update(self):
-		if self.has_lost: return;
-
 		self.y = self.y + self.y_direction * self.velocity
 
 		if self.y_direction == -1 and self.y <= offset_y: 
@@ -54,6 +55,7 @@ class Player:
 		self.hitbox = pygame.Rect(self.rect)
 
 	def increase_score(self):
+		if self.has_lost: return;
 		self.score += 1
 
 	def hit(self):
@@ -85,7 +87,7 @@ class Obstacle:
 	def draw(self, win):
 		# Defines the accurate hitbox for our character
 		self.hitbox = pygame.Rect(self.x + 6, self.y + 5, self.width - 12, self.height - 10)
-		pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
+		# pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
 
 		# This is what will allow us to animate the saw
 		self.update()
@@ -153,5 +155,12 @@ class Game:
 
 		for o in self.obstacles:
 			o.draw(win)
+
+	def draw_score(self, win, font):
+		player = self.get_player()
+		screen_width, screen_height = screen_dimensions
+		# Arguments are: text, anti-aliasing, color
+		score_text = font.render(f"Score: {player.score}", 1, (0,0,0)) 
+		win.blit(score_text, (screen_width-40, 5))
 
 
