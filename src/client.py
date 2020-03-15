@@ -68,12 +68,9 @@ def main():
 
 	clock = pygame.time.Clock()
 
-	# Sets the timer for 0.5 seconds
-	pygame.time.set_timer(pygame.USEREVENT + 1, 500) 
-
 	# Will trigger every 1 - 3 seconds
-	pygame.time.set_timer(pygame.USEREVENT + 2, 
-			      random.randrange(200, 1500))
+	pygame.time.set_timer(pygame.USEREVENT + 1, 
+			      random.randrange(100, 1500))
 
 	while run:
 		clock.tick(game_speed)
@@ -86,8 +83,8 @@ def main():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				run = False # Stop program
-			if event.type == pygame.USEREVENT + 2:
-				game.generate_obstacle()
+			if event.type == pygame.USEREVENT + 1:
+				game.generate_obstacle(random.uniform(1, 10))
 
 		game.update()
 		redrawWindow(win, game)
