@@ -4,7 +4,7 @@ import sys
 import pickle
 from player import Player, Game, screen_dimensions, offset_y
 
-server = "192.168.1.17" # ip address (discover with ipconfig)
+server = "127.0.0.1" # ip address (discover with ipconfig)
 port = 5556
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

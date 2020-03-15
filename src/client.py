@@ -73,7 +73,7 @@ def main():
 
 	# Will trigger every 1 - 3 seconds
 	pygame.time.set_timer(pygame.USEREVENT + 2, 
-					      random.randrange(1000, 3000))
+			      random.randrange(200, 1500))
 
 	while run:
 		clock.tick(game_speed)

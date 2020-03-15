@@ -1,9 +1,10 @@
 import pygame
 import random
 
-obstacle_dimensions = (40, 37)
+obstacle_dimensions = (39, 48)
 screen_dimensions = (400, 300)
 offset_y = 15
+
 
 class Player:
 	def __init__(self, x, y, width, height, color):
@@ -13,6 +14,7 @@ class Player:
 		self.height = height
 		self.color = color
 		self.rect = (x, y, width, height)
+                # The elements in the hitbox are (top left x, top left y, width, height)
 		self.hitbox = self.rect
 		
 		self.velocity = 3
@@ -54,34 +56,38 @@ class Obstacle:
 		pygame.transform.scale(pygame.image.load("../resources/images/bird1.png"), obstacle_dimensions),
 		pygame.transform.scale(pygame.image.load("../resources/images/bird2.png"), obstacle_dimensions),
 		pygame.transform.scale(pygame.image.load("../resources/images/bird3.png"), obstacle_dimensions),
-		pygame.transform.scale(pygame.image.load("../resources/images/bird4.PNG"), obstacle_dimensions),
+		pygame.transform.scale(pygame.image.load("../resources/images/bird2.PNG"), obstacle_dimensions),
+		pygame.transform.scale(pygame.image.load("../resources/images/bird1.PNG"), obstacle_dimensions),
 	]
 	def __init__(self, x, y):
 		self.width, self.height = obstacle_dimensions
 		self.x = x - self.width
 		self.y = max(0, y - self.height)
-
+		self.hitbox = (self.x + 5, self.y + 2, self.width - 10, self.height - 4)
 		self.count = -1
 		self.max_count = len(Obstacle.images)
 
 	def update(self):
-		self.count = (self.count + 1) % self.max_count 
+		self.count = (self.count + 1) % (self.max_count * 3) 
 
 	def draw(self, win):
-		# Defines the accurate hitbox for our character 
-		self.hitbox = (self.x + 10, self.y + 5, self.width - 20, self.height - 5)
+		# Defines the accurate hitbox for our character
+		self.hitbox = (self.x + 5, self.y + 2, self.width - 10, self.height - 4)
 		pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
 
 		# This is what will allow us to animate the saw
 		self.update()
-		win.blit(self.images[self.count], (self.x, self.y))  
+		win.blit(self.images[self.count // 3], (self.x, self.y))  
 
 	def move(self, vel):
 		self.x -= vel
 
 	def is_off_screen(self):
-		return self.x < self.width / 3
- 
+		return self.x < self.width // 5
+        
+	def hit(self):
+		print("Hit!")
+
 
 class Game:
 	def __init__(self, players, player_id, obstacles=[]):
